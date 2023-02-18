@@ -6,22 +6,28 @@
 
 import Foundation
 
-class ServerlessPushService: NSObject {
+public class ServerlessPushService: NSObject {
     
-    enum Priority: Int {
+    public enum Priority: Int {
         case low = 1
         case medium = 5
         case immediate = 10
     }
     
-    struct Certificate {
-        let name: String
-        let password: String
-        let host: Host
+    public struct Certificate {
+        public let name: String
+        public let password: String
+        public let host: Host
+        
+        public init(name: String, password: String, host: Host) {
+            self.name = name
+            self.password = password
+            self.host = host
+        }
     }
     
     
-    enum Host {
+    public enum Host {
         case sandbox
         case production
         
@@ -34,22 +40,22 @@ class ServerlessPushService: NSObject {
     }
     
 
-    struct Payload {
-        var title: String
-        var subtitle: String?
-        var body: String
-        var badge: Int?
-        var priority: Priority
+    public struct Payload {
+        public var title: String
+        public var subtitle: String?
+        public var body: String
+        public var badge: Int?
+        public var priority: Priority
         
-        var targetToken: String
-        var targetBundleID: String
+        public var targetToken: String
+        public var targetBundleID: String
         
         
-        static func empty() -> Payload {
+        public static func empty() -> Payload {
             return Payload(title: "", body: "", priority: .low, targetToken: "", targetBundleID: "")
         }
         
-        var json: [String: Any] {
+        public var json: [String: Any] {
             var alert: [String:Any] = [
                 "title" : title,
                 "body" : body
@@ -74,7 +80,7 @@ class ServerlessPushService: NSObject {
     var certificate: Certificate
     var background = OperationQueue()
     var session: URLSession!
-    var logError: ( (_ msg: Error) -> () )?
+    public var logError: ( (_ msg: Error) -> () )?
     let kPushCertificatePrefixes =  ["Apple Sandbox Push Services: ",
                                      "Apple Development IOS Push Services: ",
                                      "Apple Production IOS Push Services: ",
@@ -82,16 +88,16 @@ class ServerlessPushService: NSObject {
                                      "Apple Production Mac Push Services: ",
                                      "Apple Push Services: "]
     
-    init(certificate cert: Certificate) {
+    public init(certificate cert: Certificate) {
         certificate = cert
         super.init()
         
         session = URLSession(configuration: .default, delegate: self, delegateQueue: background)
     }
     
-    typealias Completion = (Error?) -> ()
+    public typealias Completion = (Error?) -> ()
     
-    func push(notification: Payload, completion: Completion? = nil ) {
+    public func push(notification: Payload, completion: Completion? = nil ) {
         let payload = notification.json
         
         let urlPath = "\(certificate.host.urlPath)/3/device/\(notification.targetToken)"
@@ -113,7 +119,7 @@ class ServerlessPushService: NSObject {
                 
                 if let data = data,
                    let body = String(data: data, encoding: .utf8),
-                   !body.trim().isEmpty {
+                   !body.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     let error = NSError(domain: "APNS-Response", code: 0, userInfo: [NSLocalizedDescriptionKey: body])
                     self?.logError?(error)
                     completion?(error)
@@ -195,7 +201,7 @@ class ServerlessPushService: NSObject {
 }
 
 extension ServerlessPushService: URLSessionDelegate {
-    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+    public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         
         guard let signature = signature() else {
             let error = NSError(domain: "ServerlessPushService", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to setup signature from Push Certification (p12) file"])
