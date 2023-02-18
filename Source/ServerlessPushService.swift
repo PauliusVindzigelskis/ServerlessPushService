@@ -86,9 +86,9 @@ public class ServerlessPushService: NSObject {
         }
     }
     
-    var certificate: Certificate
+    public private(set) var certificate: Certificate
     var background = OperationQueue()
-    var session: URLSession!
+    public private(set) var session: URLSession!
     public var logError: ( (_ msg: Error) -> () )?
     let kPushCertificatePrefixes =  ["Apple Sandbox Push Services: ",
                                      "Apple Development IOS Push Services: ",
