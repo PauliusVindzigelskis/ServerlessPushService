@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name          = 'ServerlessPushService'
-  s.version       = '0.8.0'
+  s.version       = '0.8.1'
   s.summary       = 'Framework to play with the Apple Push Notification service (APNs).'
   s.homepage      = 'https://github.com/PauliusVindzigelskis/ServerlessPushService'
   s.license       = { :type => 'MIT', :file => 'LICENSE' }
