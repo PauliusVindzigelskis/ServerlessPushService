@@ -50,6 +50,15 @@ public class ServerlessPushService: NSObject {
         public var targetToken: String
         public var targetBundleID: String
         
+        public init(title: String, subtitle: String? = nil, body: String, badge: Int? = nil, priority: Priority, targetToken: String, targetBundleID: String) {
+            self.title = title
+            self.subtitle = subtitle
+            self.body = body
+            self.badge = badge
+            self.priority = priority
+            self.targetToken = targetToken
+            self.targetBundleID = targetBundleID
+        }
         
         public static func empty() -> Payload {
             return Payload(title: "", body: "", priority: .low, targetToken: "", targetBundleID: "")
